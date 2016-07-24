@@ -20,7 +20,11 @@ import org.smart.framework.entity.Param;
 import org.smart.framework.entity.View;
 import org.smart.framework.helper.ConfigHelper;
 import org.smart.framework.helper.ControllerHelper;
+import org.smart.framework.util.CodecUtil;
+import org.smart.framework.util.JsonUtil;
 import org.smart.framework.util.ReflectionUtil;
+import org.smart.framework.util.StreamUtil;
+import org.smart.framework.util.StringUtil;
 /**
  * 控制转发器
  * @author sunkang
@@ -47,7 +51,7 @@ public class DispatcherServlet extends HttpServlet{
 		if(handler!=null){
 			//创建并获取请求参数
 			Map<String, Object> paramMap=new HashMap<String, Object>();
-			//获得请求的所有参数的名字
+			//获得表单传过来的参数
 			Enumeration<String> paramNames=req.getParameterNames();
 			while(paramNames.hasMoreElements()){
 				String paramName=paramNames.nextElement();
@@ -55,7 +59,19 @@ public class DispatcherServlet extends HttpServlet{
 				String paramValue=req.getParameter(paramName);
 				paramMap.put(paramName, paramValue);
 			}
-			//获得的请求的流
+			//获得文件流的参数
+			String body=CodecUtil.decodeURL(StreamUtil.getString(req.getInputStream()));
+			if(body !=null&&!"".equals(body)){
+				String[] params=StringUtil.splitString(body, "&");
+				for(String param:params){
+					String[] arrs=StringUtil.splitString(param, "=") ;
+					if(arrs!=null&&arrs.length>1){
+						String paramName=arrs[0];
+						String prameValue=arrs[1];
+						paramMap.put(paramName, prameValue);
+					}
+				}
+			}
 			
 			//请求参数
 			Param param=new Param(paramMap);
@@ -92,7 +108,8 @@ public class DispatcherServlet extends HttpServlet{
 					res.setContentType("application/json");
 					res.setCharacterEncoding("UTF-8");
 					PrintWriter printWriter=res.getWriter();
-					String json=
+					//转换为json类型
+					String json=JsonUtil.toJson(model);
 					printWriter.write(json);
 					printWriter.flush();
 					printWriter.close();
