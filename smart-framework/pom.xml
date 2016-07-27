@@ -26,9 +26,10 @@
 	
 	<dependency>
 	    <groupId>javax.servlet</groupId>
-	    <artifactId>servlet-api</artifactId>
-	    <version>3.0-alpha-1</version>
+	    <artifactId>javax.servlet-api</artifactId>
+	    <version>3.1.0</version>
 	</dependency>
+
     
     <!-- jsp -->
 	<dependency>
@@ -38,13 +39,13 @@
 	</dependency>
     
     <!--jstl c标签-->
-	<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
-	<dependency>
+    <dependency>
 	    <groupId>javax.servlet</groupId>
-	    <artifactId>javax.servlet-api</artifactId>
-	    <version>3.1.0</version>
+	    <artifactId>jstl</artifactId>
+	    <version>1.2</version>
 	</dependency>
-
+    
+	
     
     <!--字符串时间的操作类 -->
 	<dependency>

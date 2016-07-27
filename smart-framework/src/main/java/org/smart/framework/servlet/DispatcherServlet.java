@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRegistration;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +22,7 @@ import org.smart.framework.entity.Param;
 import org.smart.framework.entity.View;
 import org.smart.framework.helper.ConfigHelper;
 import org.smart.framework.helper.ControllerHelper;
+import org.smart.framework.helper.HelperLoader;
 import org.smart.framework.util.CodecUtil;
 import org.smart.framework.util.JsonUtil;
 import org.smart.framework.util.ReflectionUtil;
@@ -30,14 +33,35 @@ import org.smart.framework.util.StringUtil;
  * @author sunkang
  *
  */
-@WebServlet(urlPatterns="/",loadOnStartup=0)
+//@WebServlet(urlPatterns="*.do",loadOnStartup=0)
 public class DispatcherServlet extends HttpServlet{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Override
 	public void init(ServletConfig config) throws ServletException {
-		// TODO Auto-generated method stub
-		super.init(config);
+		//初始化各种helper
+		HelperLoader.init();
+		ServletContext servletContext=config.getServletContext();
+		//设置什么不拦截
+		registerServlet(servletContext);
 	}
+	/**
+	 * 如果是jsp，或者静态的资源，则不调用该servlet
+	 * @param servletContext
+	 */
+	 private void registerServlet(ServletContext servletContext) {
+	        ServletRegistration jspServlet = servletContext.getServletRegistration("jsp");
+	        jspServlet.addMapping("/index.jsp");
+	        jspServlet.addMapping(ConfigHelper.getAppJspPath() + "*");
+
+	        ServletRegistration defaultServlet = servletContext.getServletRegistration("default");
+	        defaultServlet.addMapping("/js/*");
+	        defaultServlet.addMapping(ConfigHelper.getAppAssetPath() + "*");
+	    }
 
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse res)
@@ -46,6 +70,7 @@ public class DispatcherServlet extends HttpServlet{
 		String requestMethod=req.getMethod().toLowerCase();
 		//获得请求的路径
 		String requestPath=req.getPathInfo();
+		System.out.println(requestPath);
 		//获得处理请求的action
 		Handler handler= ControllerHelper.getHandler(requestMethod, requestPath);
 		if(handler!=null){
@@ -75,6 +100,9 @@ public class DispatcherServlet extends HttpServlet{
 			
 			//请求参数
 			Param param=new Param(paramMap);
+			if(paramMap==null||paramMap.size()==0){
+				param=null;
+			}
 			//获得controller
 			Class<?> controllerClass=handler.getControllerClass();
 			//获得请求的controller的实体
@@ -82,7 +110,7 @@ public class DispatcherServlet extends HttpServlet{
 			//获得处理请求的action方法
 			Method actionMethod=handler.getActionMethod();
 			//调用action方法并且获得返回值
-			Object result=(String) ReflectionUtil.invokeMethod(controllerObj, actionMethod, param); 
+			Object result=ReflectionUtil.invokeMethod(controllerObj, actionMethod, param); 
 			//如果返回的是视图
 			if(result instanceof View){
 				View view=(View) result;
@@ -96,7 +124,7 @@ public class DispatcherServlet extends HttpServlet{
 					for(Map.Entry<String, Object> entry:model.entrySet()){
 						req.setAttribute(entry.getKey(), entry.getValue());
 					}
-					req.getRequestDispatcher(ConfigHelper.getAppAssetPath()+path).forward(req, res);
+					req.getRequestDispatcher(ConfigHelper.getAppJspPath()+path).forward(req, res);
 				}
 			}
 			//如果返回的是数据类型

@@ -44,6 +44,20 @@ public class Handler {
 	public void setActionMethod(Method actionMethod) {
 		this.actionMethod = actionMethod;
 	}
+
+
+
+	@Override
+	public String toString() {
+		return "Handler [controllerClass=" + controllerClass
+				+ ", actionMethod=" + actionMethod + ", getControllerClass()="
+				+ getControllerClass() + ", getActionMethod()="
+				+ getActionMethod() + "]";
+	}
+
+
+
+	
 	
 	
 	

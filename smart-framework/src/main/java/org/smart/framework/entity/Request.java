@@ -1,4 +1,8 @@
 package org.smart.framework.entity;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 /**
  * 请求的对象
  * @author sunkang
@@ -15,7 +19,6 @@ public class Request {
 	
 	
 	public Request(String requestType, String requestPath) {
-		super();
 		this.requestType = requestType;
 		this.requestPath = requestPath;
 	}
@@ -37,7 +40,15 @@ public class Request {
 	}
 
 	
-	
+	@Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+    }
 	
 	
 	

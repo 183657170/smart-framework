@@ -64,6 +64,15 @@ public class ControllerHelper {
 	 */
 	public static Handler getHandler(String requestType,String requestPath){
 		Request request=new Request(requestType, requestPath);
+//		System.out.println(ACTION_MAP.toString());
+//		for(Map.Entry<Request, Handler> entity :ACTION_MAP.entrySet()){
+//			Request request2=entity.getKey();
+//			Handler handler2=entity.getValue();
+//			System.out.println(request2.getRequestPath()+"  "+request2.getRequestType());
+//			System.out.println(handler2.getControllerClass()+"   "+handler2.getActionMethod());
+//		}
+		Handler handler=ACTION_MAP.get(request);
+		//要想通过object的key取value,必须设置该实体的hashCode和equals
 		return ACTION_MAP.get(request);
 	}
 }

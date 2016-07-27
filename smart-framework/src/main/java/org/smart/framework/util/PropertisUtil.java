@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+
 /**
  * Propertis操作类
  * @author sunkang
@@ -24,8 +25,10 @@ public class PropertisUtil {
 		InputStream in=null;
 		try {
 			//获得项目根目录路径，应为该方法为静态的，所以得用object
-			in = Object.class.getResourceAsStream(propertisName);
+			in =PropertisUtil.class.getResourceAsStream(propertisName);
+//			in = Object.class.getResourceAsStream(propertisName);
 			p.load(in);
+//			  p.load(PropertisUtil.class.getResourceAsStream(propertisName));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}finally{

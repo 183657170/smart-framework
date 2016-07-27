@@ -9,9 +9,9 @@ import org.smart.framework.util.ClassUtil;
  */
 public class HelperLoader {
 	public static void init(){
-		Class<?>[] classArr={BeanHelper.class,IocHelper.class,ClassHelper.class,ControllerHelper.class};
+		Class<?>[] classArr={BeanHelper.class,ClassHelper.class,IocHelper.class,ControllerHelper.class};
 		for(Class<?> cls:classArr){
-			ClassUtil.loadClass(cls.getName(),false);
+			ClassUtil.loadClass(cls.getName(),true);
 		}
 		
 	}

@@ -44,6 +44,7 @@ public class ReflectionUtil {
 		try {
 			result=method.invoke(obj, args);
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.error("invoke method failure", e);
 		}
 		return result;
@@ -60,6 +61,7 @@ public class ReflectionUtil {
 			field.setAccessible(true);
 			field.set(obj, value);
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.error("set field failure", e);
 		} 
 	}
@@ -85,7 +87,6 @@ public class ReflectionUtil {
 			setField(reflectionUtil,field,"hahahaha ");
 			System.out.println(reflectionUtil.test1);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 	}
